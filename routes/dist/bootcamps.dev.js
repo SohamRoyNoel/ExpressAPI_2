@@ -11,9 +11,14 @@ var _require = require('../controllers/bootcamps'),
     getBootcampsInRadious = _require.getBootcampsInRadious,
     getBootcampAdvancedFilter = _require.getBootcampAdvancedFilter,
     getBootcampSelectSort = _require.getBootcampSelectSort,
-    getBootcampPagination = _require.getBootcampPagination;
+    getBootcampPagination = _require.getBootcampPagination; // include other resource router :: Relation
 
-var router = express.Router();
+
+var courseRouter = require('./courses');
+
+var router = express.Router(); // Re-route into other resource : if ```'/:bootcampId/courses'``` this is the pattern, bootcamp will redirect to course router
+
+router.use('/:bootcampId/courses', courseRouter);
 router.route('/').get(getBootcamp).post(createBootcamps);
 router.route('/radius/:zipcode/:distance').get(getBootcampsInRadious);
 router.route('/filter').get(getBootcampAdvancedFilter);

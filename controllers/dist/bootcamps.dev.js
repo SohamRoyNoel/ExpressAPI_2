@@ -367,7 +367,7 @@ exports.deleteBootcamps = asyncHandler(function _callee8(req, res, next) {
     }
   });
 }); // @desc    Delete Bootcamp
-// @route   DELETE /api/v1/bootcamps/radius/:zipcode/:distance
+// @route   GET /api/v1/bootcamps/radius/:zipcode/:distance
 // @access  Private
 
 exports.getBootcampsInRadious = asyncHandler(function _callee9(req, res, next) {

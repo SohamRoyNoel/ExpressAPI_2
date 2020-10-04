@@ -10,7 +10,15 @@ const {
        getBootcampSelectSort,
        getBootcampPagination
 } = require('../controllers/bootcamps')
-const router = express.Router()
+
+// include other resource router :: Relation
+const courseRouter = require('./courses');
+
+const router = express.Router();
+
+// Re-route into other resource : if ```'/:bootcampId/courses'``` this is the pattern, bootcamp will redirect to course router
+router.use('/:bootcampId/courses', courseRouter);
+
 
 router.route('/')
 .get(getBootcamp)
