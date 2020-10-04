@@ -15,6 +15,18 @@ exports.getBootcamp = asyncHandler(async (req, res, next) => {
       })      
 });
 
+// @desc    Get all bootcamps BY VIRTUALS : list of courses (check bootcamp model)
+// @route   GET /api/v1/bootcamps/course
+// @access  Public
+exports.getBootcampWithCourse = asyncHandler(async (req, res, next) => {
+      
+      const bootcamp = await Bootcamp.find().populate('courses');
+      res.status(200).json({
+            success: true,
+            data: bootcamp
+      })      
+});
+
 // @desc      Search By multiple different query params
 // @routes    Possible Routes
 //            GET api/v1/bootcamps/filter?averageCost[lte]=10000 or api/v1/bootcamps/filter?averageCost[gte]=10000
@@ -220,10 +232,19 @@ exports.updateBootcamps = asyncHandler(async (req, res, next) => {
 // @route   DELETE /api/v1/bootcamps
 // @access  Private
 exports.deleteBootcamps = asyncHandler(async (req, res, next) => {
-      const bootcamp = await Bootcamp.findByIdAndDelete(req.params.id);
+      // When you want to delete only a bootcamp by ID
+      // const bootcamp = await Bootcamp.findByIdAndDelete(req.params.id);
+
+      // Cascade delete feature :: use middleware in bootcamp model
+      const bootcamp = await Bootcamp.findById(req.params.id);
+
       if(!bootcamp){   
             return next(error);
       }
+
+      // Delete bootcamp along with course
+      bootcamp.remove();
+
       res.status(200).json({
             success: true,
             data: bootcamp

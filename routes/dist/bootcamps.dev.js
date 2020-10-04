@@ -11,7 +11,8 @@ var _require = require('../controllers/bootcamps'),
     getBootcampsInRadious = _require.getBootcampsInRadious,
     getBootcampAdvancedFilter = _require.getBootcampAdvancedFilter,
     getBootcampSelectSort = _require.getBootcampSelectSort,
-    getBootcampPagination = _require.getBootcampPagination; // include other resource router :: Relation
+    getBootcampPagination = _require.getBootcampPagination,
+    getBootcampWithCourse = _require.getBootcampWithCourse; // include other resource router :: Relation
 
 
 var courseRouter = require('./courses');
@@ -24,5 +25,7 @@ router.route('/radius/:zipcode/:distance').get(getBootcampsInRadious);
 router.route('/filter').get(getBootcampAdvancedFilter);
 router.route('/SelectSort').get(getBootcampSelectSort);
 router.route('/page').get(getBootcampPagination);
+router.route('/virtualCourse').get(getBootcampWithCourse); // Virtuals : check model and controller
+
 router.route('/:id').get(getBootcamps).put(updateBootcamps)["delete"](deleteBootcamps);
 module.exports = router;

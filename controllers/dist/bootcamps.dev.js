@@ -38,6 +38,32 @@ exports.getBootcamp = asyncHandler(function _callee(req, res, next) {
       }
     }
   });
+}); // @desc    Get all bootcamps BY VIRTUALS : list of courses (check bootcamp model)
+// @route   GET /api/v1/bootcamps/course
+// @access  Public
+
+exports.getBootcampWithCourse = asyncHandler(function _callee2(req, res, next) {
+  var bootcamp;
+  return regeneratorRuntime.async(function _callee2$(_context2) {
+    while (1) {
+      switch (_context2.prev = _context2.next) {
+        case 0:
+          _context2.next = 2;
+          return regeneratorRuntime.awrap(Bootcamp.find().populate('courses'));
+
+        case 2:
+          bootcamp = _context2.sent;
+          res.status(200).json({
+            success: true,
+            data: bootcamp
+          });
+
+        case 4:
+        case "end":
+          return _context2.stop();
+      }
+    }
+  });
 }); // @desc      Search By multiple different query params
 // @routes    Possible Routes
 //            GET api/v1/bootcamps/filter?averageCost[lte]=10000 or api/v1/bootcamps/filter?averageCost[gte]=10000
@@ -45,11 +71,11 @@ exports.getBootcamp = asyncHandler(function _callee(req, res, next) {
 //            GET api/v1/bootcamps/filter?careers[in]=Business
 // @access    Public
 
-exports.getBootcampAdvancedFilter = asyncHandler(function _callee2(req, res, next) {
+exports.getBootcampAdvancedFilter = asyncHandler(function _callee3(req, res, next) {
   var query, queryString, bootcamp;
-  return regeneratorRuntime.async(function _callee2$(_context2) {
+  return regeneratorRuntime.async(function _callee3$(_context3) {
     while (1) {
-      switch (_context2.prev = _context2.next) {
+      switch (_context3.prev = _context3.next) {
         case 0:
           queryString = JSON.stringify(req.query);
           queryString = queryString.replace(/\b(gt|gte|lt|lte|in)\b/g, function (match) {
@@ -58,11 +84,11 @@ exports.getBootcampAdvancedFilter = asyncHandler(function _callee2(req, res, nex
 
           query = Bootcamp.find(JSON.parse(queryString)); // console.log(queryString);
 
-          _context2.next = 5;
+          _context3.next = 5;
           return regeneratorRuntime.awrap(query);
 
         case 5:
-          bootcamp = _context2.sent;
+          bootcamp = _context3.sent;
           res.status(200).json({
             success: true,
             count: bootcamp.length,
@@ -71,7 +97,7 @@ exports.getBootcampAdvancedFilter = asyncHandler(function _callee2(req, res, nex
 
         case 7:
         case "end":
-          return _context2.stop();
+          return _context3.stop();
       }
     }
   });
@@ -83,11 +109,11 @@ exports.getBootcampAdvancedFilter = asyncHandler(function _callee2(req, res, nex
 //            sortReverse   - GET api/v1/bootcamps/SelectSort?select=name, description,createdAt&sort=-name               
 // @access    Public
 
-exports.getBootcampSelectSort = asyncHandler(function _callee3(req, res, next) {
+exports.getBootcampSelectSort = asyncHandler(function _callee4(req, res, next) {
   var query, requestQuery, removeFields, queryString, fields, sortBy, bootcamp;
-  return regeneratorRuntime.async(function _callee3$(_context3) {
+  return regeneratorRuntime.async(function _callee4$(_context4) {
     while (1) {
-      switch (_context3.prev = _context3.next) {
+      switch (_context4.prev = _context4.next) {
         case 0:
           requestQuery = _objectSpread({}, req.query); // Fields to exclude
 
@@ -120,11 +146,11 @@ exports.getBootcampSelectSort = asyncHandler(function _callee3(req, res, next) {
           } // console.log(queryString);
 
 
-          _context3.next = 10;
+          _context4.next = 10;
           return regeneratorRuntime.awrap(query);
 
         case 10:
-          bootcamp = _context3.sent;
+          bootcamp = _context4.sent;
           res.status(200).json({
             success: true,
             count: bootcamp.length,
@@ -133,7 +159,7 @@ exports.getBootcampSelectSort = asyncHandler(function _callee3(req, res, next) {
 
         case 12:
         case "end":
-          return _context3.stop();
+          return _context4.stop();
       }
     }
   });
@@ -145,11 +171,11 @@ exports.getBootcampSelectSort = asyncHandler(function _callee3(req, res, next) {
 //            sortReverse   - GET api/v1/bootcamps/SelectSort?select=name, description,createdAt&sort=-name               
 // @access    Public
 
-exports.getBootcampPagination = asyncHandler(function _callee4(req, res, next) {
+exports.getBootcampPagination = asyncHandler(function _callee5(req, res, next) {
   var query, requestQuery, removeFields, queryString, fields, sortBy, page, limit, startIndex, endIndex, total, bootcamp, pagination;
-  return regeneratorRuntime.async(function _callee4$(_context4) {
+  return regeneratorRuntime.async(function _callee5$(_context5) {
     while (1) {
-      switch (_context4.prev = _context4.next) {
+      switch (_context5.prev = _context5.next) {
         case 0:
           requestQuery = _objectSpread({}, req.query); // Fields to exclude
 
@@ -186,18 +212,18 @@ exports.getBootcampPagination = asyncHandler(function _callee4(req, res, next) {
           limit = parseInt(req.query.limit, 10) || 2;
           startIndex = (page - 1) * limit;
           endIndex = page * limit;
-          _context4.next = 14;
+          _context5.next = 14;
           return regeneratorRuntime.awrap(Bootcamp.countDocuments());
 
         case 14:
-          total = _context4.sent;
+          total = _context5.sent;
           query = query.skip(startIndex).limit(limit); // console.log(queryString);
 
-          _context4.next = 18;
+          _context5.next = 18;
           return regeneratorRuntime.awrap(query);
 
         case 18:
-          bootcamp = _context4.sent;
+          bootcamp = _context5.sent;
           // Pagination Result : if there is no previous page dont show that, same for next
           pagination = {};
 
@@ -226,7 +252,7 @@ exports.getBootcampPagination = asyncHandler(function _callee4(req, res, next) {
 
         case 23:
         case "end":
-          return _context4.stop();
+          return _context5.stop();
       }
     }
   });
@@ -234,24 +260,24 @@ exports.getBootcampPagination = asyncHandler(function _callee4(req, res, next) {
 // @route   GET /api/v1/bootcamps/:id
 // @access  Public
 
-exports.getBootcamps = asyncHandler(function _callee5(req, res, next) {
+exports.getBootcamps = asyncHandler(function _callee6(req, res, next) {
   var bootcamp;
-  return regeneratorRuntime.async(function _callee5$(_context5) {
+  return regeneratorRuntime.async(function _callee6$(_context6) {
     while (1) {
-      switch (_context5.prev = _context5.next) {
+      switch (_context6.prev = _context6.next) {
         case 0:
-          _context5.next = 2;
+          _context6.next = 2;
           return regeneratorRuntime.awrap(Bootcamp.findById(req.params.id));
 
         case 2:
-          bootcamp = _context5.sent;
+          bootcamp = _context6.sent;
 
           if (bootcamp) {
-            _context5.next = 5;
+            _context6.next = 5;
             break;
           }
 
-          return _context5.abrupt("return", next(error));
+          return _context6.abrupt("return", next(error));
 
         case 5:
           res.status(200).json({
@@ -261,7 +287,7 @@ exports.getBootcamps = asyncHandler(function _callee5(req, res, next) {
 
         case 6:
         case "end":
-          return _context5.stop();
+          return _context6.stop();
       }
     }
   });
@@ -269,17 +295,17 @@ exports.getBootcamps = asyncHandler(function _callee5(req, res, next) {
 // @route   POST /api/v1/bootcamps
 // @access  Private
 
-exports.createBootcamps = asyncHandler(function _callee6(req, res, next) {
+exports.createBootcamps = asyncHandler(function _callee7(req, res, next) {
   var bootcamp;
-  return regeneratorRuntime.async(function _callee6$(_context6) {
+  return regeneratorRuntime.async(function _callee7$(_context7) {
     while (1) {
-      switch (_context6.prev = _context6.next) {
+      switch (_context7.prev = _context7.next) {
         case 0:
-          _context6.next = 2;
+          _context7.next = 2;
           return regeneratorRuntime.awrap(Bootcamp.create(req.body));
 
         case 2:
-          bootcamp = _context6.sent;
+          bootcamp = _context7.sent;
           res.status(201).json({
             success: true,
             data: bootcamp
@@ -287,7 +313,7 @@ exports.createBootcamps = asyncHandler(function _callee6(req, res, next) {
 
         case 4:
         case "end":
-          return _context6.stop();
+          return _context7.stop();
       }
     }
   });
@@ -295,54 +321,19 @@ exports.createBootcamps = asyncHandler(function _callee6(req, res, next) {
 // @route   PUT /api/v1/bootcamps/:id
 // @access  Private
 
-exports.updateBootcamps = asyncHandler(function _callee7(req, res, next) {
-  var bootcamp;
-  return regeneratorRuntime.async(function _callee7$(_context7) {
-    while (1) {
-      switch (_context7.prev = _context7.next) {
-        case 0:
-          _context7.next = 2;
-          return regeneratorRuntime.awrap(Bootcamp.findByIdAndUpdate(req.params.id, req.body, {
-            "new": true,
-            // To return updated data
-            runValidators: true // Run validator explicitly 
-
-          }));
-
-        case 2:
-          bootcamp = _context7.sent;
-
-          if (bootcamp) {
-            _context7.next = 5;
-            break;
-          }
-
-          return _context7.abrupt("return", next(error));
-
-        case 5:
-          res.status(200).json({
-            success: true,
-            data: bootcamp
-          });
-
-        case 6:
-        case "end":
-          return _context7.stop();
-      }
-    }
-  });
-}); // @desc    Delete Bootcamp
-// @route   DELETE /api/v1/bootcamps
-// @access  Private
-
-exports.deleteBootcamps = asyncHandler(function _callee8(req, res, next) {
+exports.updateBootcamps = asyncHandler(function _callee8(req, res, next) {
   var bootcamp;
   return regeneratorRuntime.async(function _callee8$(_context8) {
     while (1) {
       switch (_context8.prev = _context8.next) {
         case 0:
           _context8.next = 2;
-          return regeneratorRuntime.awrap(Bootcamp.findByIdAndDelete(req.params.id));
+          return regeneratorRuntime.awrap(Bootcamp.findByIdAndUpdate(req.params.id, req.body, {
+            "new": true,
+            // To return updated data
+            runValidators: true // Run validator explicitly 
+
+          }));
 
         case 2:
           bootcamp = _context8.sent;
@@ -367,28 +358,65 @@ exports.deleteBootcamps = asyncHandler(function _callee8(req, res, next) {
     }
   });
 }); // @desc    Delete Bootcamp
-// @route   GET /api/v1/bootcamps/radius/:zipcode/:distance
+// @route   DELETE /api/v1/bootcamps
 // @access  Private
 
-exports.getBootcampsInRadious = asyncHandler(function _callee9(req, res, next) {
-  var _req$params, zipcode, distance, loc, lat, lng, radius, bootcamps;
-
+exports.deleteBootcamps = asyncHandler(function _callee9(req, res, next) {
+  var bootcamp;
   return regeneratorRuntime.async(function _callee9$(_context9) {
     while (1) {
       switch (_context9.prev = _context9.next) {
         case 0:
+          _context9.next = 2;
+          return regeneratorRuntime.awrap(Bootcamp.findById(req.params.id));
+
+        case 2:
+          bootcamp = _context9.sent;
+
+          if (bootcamp) {
+            _context9.next = 5;
+            break;
+          }
+
+          return _context9.abrupt("return", next(error));
+
+        case 5:
+          // Delete bootcamp along with course
+          bootcamp.remove();
+          res.status(200).json({
+            success: true,
+            data: bootcamp
+          });
+
+        case 7:
+        case "end":
+          return _context9.stop();
+      }
+    }
+  });
+}); // @desc    Delete Bootcamp
+// @route   GET /api/v1/bootcamps/radius/:zipcode/:distance
+// @access  Private
+
+exports.getBootcampsInRadious = asyncHandler(function _callee10(req, res, next) {
+  var _req$params, zipcode, distance, loc, lat, lng, radius, bootcamps;
+
+  return regeneratorRuntime.async(function _callee10$(_context10) {
+    while (1) {
+      switch (_context10.prev = _context10.next) {
+        case 0:
           _req$params = req.params, zipcode = _req$params.zipcode, distance = _req$params.distance;
-          _context9.next = 3;
+          _context10.next = 3;
           return regeneratorRuntime.awrap(geocoder.geocode(zipcode));
 
         case 3:
-          loc = _context9.sent;
+          loc = _context10.sent;
           lat = loc[0].latitude;
           lng = loc[0].longitude; // calculate radius 
 
           radius = distance / 6378; // Radius will be counted in KM
 
-          _context9.next = 9;
+          _context10.next = 9;
           return regeneratorRuntime.awrap(Bootcamp.find({
             location: {
               $geoWithin: {
@@ -398,7 +426,7 @@ exports.getBootcampsInRadious = asyncHandler(function _callee9(req, res, next) {
           }));
 
         case 9:
-          bootcamps = _context9.sent;
+          bootcamps = _context10.sent;
           res.status(200).json({
             success: true,
             count: bootcamps.length,
@@ -407,7 +435,7 @@ exports.getBootcampsInRadious = asyncHandler(function _callee9(req, res, next) {
 
         case 11:
         case "end":
-          return _context9.stop();
+          return _context10.stop();
       }
     }
   });

@@ -8,7 +8,8 @@ const {
        getBootcampsInRadious,
        getBootcampAdvancedFilter,
        getBootcampSelectSort,
-       getBootcampPagination
+       getBootcampPagination,
+       getBootcampWithCourse
 } = require('../controllers/bootcamps')
 
 // include other resource router :: Relation
@@ -28,6 +29,7 @@ router.route('/radius/:zipcode/:distance').get(getBootcampsInRadious);
 router.route('/filter').get(getBootcampAdvancedFilter);
 router.route('/SelectSort').get(getBootcampSelectSort);
 router.route('/page').get(getBootcampPagination);
+router.route('/virtualCourse').get(getBootcampWithCourse); // Virtuals : check model and controller
 
 router.route('/:id')
 .get(getBootcamps)
