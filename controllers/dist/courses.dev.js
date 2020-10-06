@@ -101,27 +101,28 @@ exports.addCourse = asyncHandler(function _callee3(req, res, next) {
     while (1) {
       switch (_context3.prev = _context3.next) {
         case 0:
-          // Course has a dependency on Bootcamp. So, add a bootcamp to the course model manually
+          console.log('Will be posted'); // Course has a dependency on Bootcamp. So, add a bootcamp to the course model manually
+
           req.body.bootcamp = req.params.bootcampId; // check if that bootcamp id exists
 
-          _context3.next = 3;
+          _context3.next = 4;
           return regeneratorRuntime.awrap(Bootcamp.findById(req.params.bootcampId));
 
-        case 3:
+        case 4:
           bootcamp = _context3.sent;
 
           if (bootcamp) {
-            _context3.next = 6;
+            _context3.next = 7;
             break;
           }
 
           return _context3.abrupt("return", next(new ErrorResponse("No bootcamp is found on ".concat(req.params.bootcampId)), 404));
 
-        case 6:
-          _context3.next = 8;
+        case 7:
+          _context3.next = 9;
           return regeneratorRuntime.awrap(Course.create(req.body));
 
-        case 8:
+        case 9:
           courses = _context3.sent;
           res.status(200).json({
             success: true,
@@ -129,7 +130,7 @@ exports.addCourse = asyncHandler(function _callee3(req, res, next) {
             data: courses
           });
 
-        case 10:
+        case 11:
         case "end":
           return _context3.stop();
       }

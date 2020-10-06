@@ -16,3 +16,5 @@
      ```npm i slugify```
  - Geo-Coder
      ```npm i node-geocoder```
+ - File-Uploader
+     ```npm i express-fileupload```

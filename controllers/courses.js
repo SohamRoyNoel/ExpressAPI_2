@@ -64,6 +64,7 @@ exports.getCourse = asyncHandler(async (req, res, next) => {
 // @route   POST /api/v1/bootcamps/:bootcampId/courses
 // @access  Private
 exports.addCourse = asyncHandler(async (req, res, next) => {
+      console.log('Will be posted');
 
       // Course has a dependency on Bootcamp. So, add a bootcamp to the course model manually
       req.body.bootcamp = req.params.bootcampId;
