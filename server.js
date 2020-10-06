@@ -12,6 +12,7 @@ const path = require('path');
 // Route Files
 const bootcamps = require('./routes/bootcamps');
 const courses = require('./routes/courses');
+const auth = require('./routes/auth');
 
 // Middleware
 const logger = require('./middleware/logger');
@@ -44,6 +45,7 @@ if(process.env.NODE_ENV === 'developmemt'){
 // Mount Routers
 app.use('/api/v1/bootcamps', bootcamps);
 app.use('/api/v1/courses', courses);
+app.use('/api/v1/auth', auth);
 
 
 // Custom error handler : middleware concept

@@ -17,4 +17,7 @@
  - Geo-Coder
      ```npm i node-geocoder```
  - File-Uploader
-     ```npm i express-fileupload```
+     ```npm i express-fileupload``` 
+ - JWT Token and Encrypt password
+    ```npm i jsonwebtoken bcryptjs```
+

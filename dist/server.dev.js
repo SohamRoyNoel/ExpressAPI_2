@@ -19,7 +19,9 @@ var path = require('path'); // Route Files
 
 var bootcamps = require('./routes/bootcamps');
 
-var courses = require('./routes/courses'); // Middleware
+var courses = require('./routes/courses');
+
+var auth = require('./routes/auth'); // Middleware
 
 
 var logger = require('./middleware/logger'); // ENV variables
@@ -47,7 +49,8 @@ if (process.env.NODE_ENV === 'developmemt') {
 
 
 app.use('/api/v1/bootcamps', bootcamps);
-app.use('/api/v1/courses', courses); // Custom error handler : middleware concept
+app.use('/api/v1/courses', courses);
+app.use('/api/v1/auth', auth); // Custom error handler : middleware concept
 
 app.use(errorHandler);
 var PORT = process.env.PORT || 5000;
