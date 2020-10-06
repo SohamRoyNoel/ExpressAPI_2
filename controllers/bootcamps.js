@@ -2,6 +2,10 @@ const Bootcamp = require("../models/Bootcamp");
 const geocoder = require('../utils/geocoder');
 // Error Middleware
 const asyncHandler = require("../middleware/async");
+const ErrorResponse = require("../utils/errorResponse");
+
+// Path module
+const path = require('path');
 
 // @desc    Get all bootcamps
 // @route   GET /api/v1/bootcamps
@@ -251,7 +255,7 @@ exports.deleteBootcamps = asyncHandler(async (req, res, next) => {
       })    
 })
 
-// @desc    Delete Bootcamp
+// @desc    location
 // @route   GET /api/v1/bootcamps/radius/:zipcode/:distance
 // @access  Private
 exports.getBootcampsInRadious = asyncHandler(async (req, res, next) => {
@@ -272,4 +276,50 @@ exports.getBootcampsInRadious = asyncHandler(async (req, res, next) => {
             count: bootcamps.length,
             data: bootcamps
       })    
+})
+
+// @desc    Upload photo
+// @route   PUT /api/v1/bootcamps/:id/photo
+// @access  Private
+exports.bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
+
+      const bootcamp = await Bootcamp.findById(req.params.id);
+
+      if(!bootcamp){   
+            return next(error);
+      }
+
+      // Check if the file exists
+      if(!req.files){
+            return next(new ErrorResponse('Please upload a file', 400));
+      }
+
+      const file = req.files.file;
+      // check mime type; ifImage
+      if(!file.mimetype.startsWith('image')){
+            return next(new ErrorResponse('This is not an image file', 400));
+      }
+      // Check file size
+      if(!file.size > process.env.MAX_FILE_UPLOAD){
+            return next(new ErrorResponse(`Image is fatter then expected ${process.env.MAX_FILE_UPLOAD}`, 400));
+      }
+
+      // Create custom file name with extension 
+      file.name= `photo_${bootcamp._id}${path.parse(file.name).ext}`; //photo_5d725a1b7b292f5f8ceff788.png
+
+      // move the file to server location
+      file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async err => {
+            if(err){
+                  console.log(err);
+                  return next(new ErrorResponse('Problem with file response', 500));
+            }
+
+            await Bootcamp.findByIdAndUpdate(req.params.id, { photo: file.name });
+
+            res.status(200).json({
+                  success:200,
+                  data: file.name
+            })
+      })
+      
 })

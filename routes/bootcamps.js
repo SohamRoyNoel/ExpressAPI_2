@@ -9,7 +9,8 @@ const {
        getBootcampAdvancedFilter,
        getBootcampSelectSort,
        getBootcampPagination,
-       getBootcampWithCourse
+       getBootcampWithCourse,
+       bootcampPhotoUpload
 } = require('../controllers/bootcamps')
 
 // include other resource router :: Relation
@@ -30,6 +31,8 @@ router.route('/filter').get(getBootcampAdvancedFilter);
 router.route('/SelectSort').get(getBootcampSelectSort);
 router.route('/page').get(getBootcampPagination);
 router.route('/virtualCourse').get(getBootcampWithCourse); // Virtuals : check model and controller
+
+router.route('/:id/photo').put(bootcampPhotoUpload);
 
 router.route('/:id')
 .get(getBootcamps)

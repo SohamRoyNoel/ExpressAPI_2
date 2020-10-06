@@ -8,7 +8,13 @@ var morgan = require('morgan');
 
 var connectDB = require('./config/db');
 
-var errorHandler = require("./middleware/error"); // Route Files
+var errorHandler = require("./middleware/error"); // File upload
+
+
+var fileUpload = require('express-fileupload'); // Path module
+
+
+var path = require('path'); // Route Files
 
 
 var bootcamps = require('./routes/bootcamps');
@@ -26,7 +32,11 @@ dotenv.config({
 connectDB();
 var app = express(); // Body Parser : used to handel request from outside:: without this we will get undefined on console
 
-app.use(express.json()); // Mount Middleware 
+app.use(express.json()); // File Upload middleware
+
+app.use(fileUpload()); // File upload static path
+
+app.use(express["static"](path.join(__dirname, 'public'))); // Mount Middleware 
 //app.use(logger);
 // Dev logging Middleware
 

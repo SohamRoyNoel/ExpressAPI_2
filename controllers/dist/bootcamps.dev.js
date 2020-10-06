@@ -11,7 +11,12 @@ var Bootcamp = require("../models/Bootcamp");
 var geocoder = require('../utils/geocoder'); // Error Middleware
 
 
-var asyncHandler = require("../middleware/async"); // @desc    Get all bootcamps
+var asyncHandler = require("../middleware/async");
+
+var ErrorResponse = require("../utils/errorResponse"); // Path module
+
+
+var path = require('path'); // @desc    Get all bootcamps
 // @route   GET /api/v1/bootcamps
 // @access  Public
 
@@ -394,7 +399,7 @@ exports.deleteBootcamps = asyncHandler(function _callee9(req, res, next) {
       }
     }
   });
-}); // @desc    Delete Bootcamp
+}); // @desc    location
 // @route   GET /api/v1/bootcamps/radius/:zipcode/:distance
 // @access  Private
 
@@ -436,6 +441,99 @@ exports.getBootcampsInRadious = asyncHandler(function _callee10(req, res, next) 
         case 11:
         case "end":
           return _context10.stop();
+      }
+    }
+  });
+}); // @desc    Upload photo
+// @route   PUT /api/v1/bootcamps/:id/photo
+// @access  Private
+
+exports.bootcampPhotoUpload = asyncHandler(function _callee12(req, res, next) {
+  var bootcamp, file;
+  return regeneratorRuntime.async(function _callee12$(_context12) {
+    while (1) {
+      switch (_context12.prev = _context12.next) {
+        case 0:
+          _context12.next = 2;
+          return regeneratorRuntime.awrap(Bootcamp.findById(req.params.id));
+
+        case 2:
+          bootcamp = _context12.sent;
+
+          if (bootcamp) {
+            _context12.next = 5;
+            break;
+          }
+
+          return _context12.abrupt("return", next(error));
+
+        case 5:
+          if (req.files) {
+            _context12.next = 7;
+            break;
+          }
+
+          return _context12.abrupt("return", next(new ErrorResponse('Please upload a file', 400)));
+
+        case 7:
+          file = req.files.file; // check mime type; ifImage
+
+          if (file.mimetype.startsWith('image')) {
+            _context12.next = 10;
+            break;
+          }
+
+          return _context12.abrupt("return", next(new ErrorResponse('This is not an image file', 400)));
+
+        case 10:
+          if (!(!file.size > process.env.MAX_FILE_UPLOAD)) {
+            _context12.next = 12;
+            break;
+          }
+
+          return _context12.abrupt("return", next(new ErrorResponse("Image is fatter then expected ".concat(process.env.MAX_FILE_UPLOAD), 400)));
+
+        case 12:
+          // Create custom file name with extension 
+          file.name = "photo_".concat(bootcamp._id).concat(path.parse(file.name).ext); //photo_5d725a1b7b292f5f8ceff788.png
+          // move the file to server location
+
+          file.mv("".concat(process.env.FILE_UPLOAD_PATH, "/").concat(file.name), function _callee11(err) {
+            return regeneratorRuntime.async(function _callee11$(_context11) {
+              while (1) {
+                switch (_context11.prev = _context11.next) {
+                  case 0:
+                    if (!err) {
+                      _context11.next = 3;
+                      break;
+                    }
+
+                    console.log(err);
+                    return _context11.abrupt("return", next(new ErrorResponse('Problem with file response', 500)));
+
+                  case 3:
+                    _context11.next = 5;
+                    return regeneratorRuntime.awrap(Bootcamp.findByIdAndUpdate(req.params.id, {
+                      photo: file.name
+                    }));
+
+                  case 5:
+                    res.status(200).json({
+                      success: 200,
+                      data: file.name
+                    });
+
+                  case 6:
+                  case "end":
+                    return _context11.stop();
+                }
+              }
+            });
+          });
+
+        case 14:
+        case "end":
+          return _context12.stop();
       }
     }
   });

@@ -4,6 +4,11 @@ const morgan = require('morgan');
 const connectDB = require('./config/db');
 const errorHandler = require("./middleware/error");
 
+// File upload
+const fileUpload = require('express-fileupload');
+// Path module
+const path = require('path');
+
 // Route Files
 const bootcamps = require('./routes/bootcamps');
 const courses = require('./routes/courses');
@@ -21,6 +26,11 @@ const app = express();
 
 // Body Parser : used to handel request from outside:: without this we will get undefined on console
 app.use(express.json());
+
+// File Upload middleware
+app.use(fileUpload());
+// File upload static path
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Mount Middleware 
 //app.use(logger);

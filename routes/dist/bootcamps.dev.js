@@ -12,7 +12,8 @@ var _require = require('../controllers/bootcamps'),
     getBootcampAdvancedFilter = _require.getBootcampAdvancedFilter,
     getBootcampSelectSort = _require.getBootcampSelectSort,
     getBootcampPagination = _require.getBootcampPagination,
-    getBootcampWithCourse = _require.getBootcampWithCourse; // include other resource router :: Relation
+    getBootcampWithCourse = _require.getBootcampWithCourse,
+    bootcampPhotoUpload = _require.bootcampPhotoUpload; // include other resource router :: Relation
 
 
 var courseRouter = require('./courses');
@@ -27,5 +28,6 @@ router.route('/SelectSort').get(getBootcampSelectSort);
 router.route('/page').get(getBootcampPagination);
 router.route('/virtualCourse').get(getBootcampWithCourse); // Virtuals : check model and controller
 
+router.route('/:id/photo').put(bootcampPhotoUpload);
 router.route('/:id').get(getBootcamps).put(updateBootcamps)["delete"](deleteBootcamps);
 module.exports = router;
