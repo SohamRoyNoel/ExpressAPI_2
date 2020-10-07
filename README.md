@@ -20,4 +20,9 @@
      ```npm i express-fileupload``` 
  - JWT Token and Encrypt password
     ```npm i jsonwebtoken bcryptjs```
+ - Send a Token in Cookie : cookie perser
+    ```npm install cookie-parser```
 
+
+
+    

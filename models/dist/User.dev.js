@@ -80,6 +80,26 @@ UserSchema.methods.getJwtToken = function () {
   }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRE
   });
+}; // Match user entered password to the hashed password to the db
+
+
+UserSchema.methods.signInWithJwt = function _callee2(enteredPassword) {
+  return regeneratorRuntime.async(function _callee2$(_context2) {
+    while (1) {
+      switch (_context2.prev = _context2.next) {
+        case 0:
+          _context2.next = 2;
+          return regeneratorRuntime.awrap(bcrypt.compare(enteredPassword, this.password));
+
+        case 2:
+          return _context2.abrupt("return", _context2.sent);
+
+        case 3:
+        case "end":
+          return _context2.stop();
+      }
+    }
+  }, null, this);
 };
 
 module.exports = mongoose.model('User', UserSchema);

@@ -43,28 +43,58 @@ exports.register = asyncHandler(function _callee(req, res, next) {
       }
     }
   });
-}); // @desc    Register a User
-// @route   GET /api/v1/auth/register
+}); // @desc    Login a User
+// @route   POST /api/v1/auth/login
 // @access  Public
 
-exports.register = asyncHandler(function _callee2(req, res, next) {
-  var _req$body2, name, email, password, role, user, token, tokenEmbededUser;
+exports.loginUser = asyncHandler(function _callee2(req, res, next) {
+  var _req$body2, email, password, user, isPassword, token, tokenEmbededUser;
 
   return regeneratorRuntime.async(function _callee2$(_context2) {
     while (1) {
       switch (_context2.prev = _context2.next) {
         case 0:
-          _req$body2 = req.body, name = _req$body2.name, email = _req$body2.email, password = _req$body2.password, role = _req$body2.role;
-          _context2.next = 3;
-          return regeneratorRuntime.awrap(User.create({
-            name: name,
-            email: email,
-            password: password,
-            role: role
-          }));
+          console.log("Login");
+          _req$body2 = req.body, email = _req$body2.email, password = _req$body2.password; // check if that is password : LOGIN does not go through model so check manually
 
-        case 3:
+          if (!(!email || !password)) {
+            _context2.next = 4;
+            break;
+          }
+
+          return _context2.abrupt("return", next(new ErrorResponse('Please provide email or password', 400)));
+
+        case 4:
+          _context2.next = 6;
+          return regeneratorRuntime.awrap(User.findOne({
+            email: email
+          }).select('+password'));
+
+        case 6:
           user = _context2.sent;
+
+          if (user) {
+            _context2.next = 9;
+            break;
+          }
+
+          return _context2.abrupt("return", next(new ErrorResponse("User can not be authenticated", 404)));
+
+        case 9:
+          _context2.next = 11;
+          return regeneratorRuntime.awrap(user.signInWithJwt(password));
+
+        case 11:
+          isPassword = _context2.sent;
+
+          if (isPassword) {
+            _context2.next = 14;
+            break;
+          }
+
+          return _context2.abrupt("return", next(new ErrorResponse("User can not be authenticated", 404)));
+
+        case 14:
           // Token
           token = user.getJwtToken();
           tokenEmbededUser = user.toObject();
@@ -74,7 +104,7 @@ exports.register = asyncHandler(function _callee2(req, res, next) {
             userData: tokenEmbededUser
           });
 
-        case 8:
+        case 18:
         case "end":
           return _context2.stop();
       }
