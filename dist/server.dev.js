@@ -14,7 +14,10 @@ var errorHandler = require("./middleware/error"); // File upload
 var fileUpload = require('express-fileupload'); // Path module
 
 
-var path = require('path'); // Route Files
+var path = require('path'); // Cookie parser
+
+
+var cookieParser = require('cookie-parser'); // Route Files
 
 
 var bootcamps = require('./routes/bootcamps');
@@ -32,7 +35,9 @@ dotenv.config({
 }); // Connect Database
 
 connectDB();
-var app = express(); // Body Parser : used to handel request from outside:: without this we will get undefined on console
+var app = express(); // Handle cookie middleware
+
+app.use(cookieParser()); // Body Parser : used to handel request from outside:: without this we will get undefined on console
 
 app.use(express.json()); // File Upload middleware
 

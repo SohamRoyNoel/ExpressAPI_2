@@ -11,7 +11,7 @@ var ErrorResponse = require("../utils/errorResponse"); // @desc    Register a Us
 
 
 exports.register = asyncHandler(function _callee(req, res, next) {
-  var _req$body, name, email, password, role, user, token, tokenEmbededUser;
+  var _req$body, name, email, password, role, user;
 
   return regeneratorRuntime.async(function _callee$(_context) {
     while (1) {
@@ -28,16 +28,9 @@ exports.register = asyncHandler(function _callee(req, res, next) {
 
         case 3:
           user = _context.sent;
-          // Token
-          token = user.getJwtToken();
-          tokenEmbededUser = user.toObject();
-          tokenEmbededUser.token = token;
-          res.status(200).json({
-            success: true,
-            userData: tokenEmbededUser
-          });
+          sendTokenResponse(user, 200, res);
 
-        case 8:
+        case 5:
         case "end":
           return _context.stop();
       }
@@ -48,7 +41,7 @@ exports.register = asyncHandler(function _callee(req, res, next) {
 // @access  Public
 
 exports.loginUser = asyncHandler(function _callee2(req, res, next) {
-  var _req$body2, email, password, user, isPassword, token, tokenEmbededUser;
+  var _req$body2, email, password, user, isPassword;
 
   return regeneratorRuntime.async(function _callee2$(_context2) {
     while (1) {
@@ -95,19 +88,55 @@ exports.loginUser = asyncHandler(function _callee2(req, res, next) {
           return _context2.abrupt("return", next(new ErrorResponse("User can not be authenticated", 404)));
 
         case 14:
-          // Token
-          token = user.getJwtToken();
-          tokenEmbededUser = user.toObject();
-          tokenEmbededUser.token = token;
-          res.status(200).json({
-            success: true,
-            userData: tokenEmbededUser
-          });
+          sendTokenResponse(user, 200, res);
 
-        case 18:
+        case 15:
         case "end":
           return _context2.stop();
       }
     }
   });
-});
+}); // @desc    Logged in User
+// @route   GET /api/v1/auth/me
+// @access  Protected
+
+exports.me = asyncHandler(function _callee3(req, res, next) {
+  var user;
+  return regeneratorRuntime.async(function _callee3$(_context3) {
+    while (1) {
+      switch (_context3.prev = _context3.next) {
+        case 0:
+          _context3.next = 2;
+          return regeneratorRuntime.awrap(User.findById(req.user.id));
+
+        case 2:
+          user = _context3.sent;
+          res.status(200).json({
+            success: true,
+            user: user
+          });
+
+        case 4:
+        case "end":
+          return _context3.stop();
+      }
+    }
+  });
+}); // Create token custom function
+
+var sendTokenResponse = function sendTokenResponse(user, statusCode, res) {
+  var token = user.getJwtToken();
+  var options = {
+    expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000),
+    httpOnly: true // Only accessible by Client side code
+
+  }; // embed token
+
+  var tokenEmbededUser = user.toObject();
+  tokenEmbededUser.token = token;
+  res.status(statusCode).cookie('token', token, options).json({
+    success: true,
+    // userData: tokenEmbededUser
+    token: token
+  });
+};

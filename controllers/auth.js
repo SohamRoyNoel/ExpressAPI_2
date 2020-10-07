@@ -16,16 +16,9 @@ exports.register = asyncHandler(async (req, res, next) => {
             email,
             password,
             role
-      })
-      // Token
-      const token = user.getJwtToken();
-      var tokenEmbededUser = user.toObject();
-      tokenEmbededUser.token = token;
+      });
 
-      res.status(200).json({
-            success: true,
-            userData: tokenEmbededUser
-      })      
+      sendTokenResponse(user, 200, res);
 });
 
 
@@ -56,14 +49,41 @@ exports.loginUser = asyncHandler(async (req, res, next) => {
             return next(new ErrorResponse(`User can not be authenticated`, 404)); 
       }
 
-      // Token
-      const token = user.getJwtToken();
-      var tokenEmbededUser = user.toObject();
-      tokenEmbededUser.token = token;
-      
-      res.status(200).json({
-            success: true,
-            userData: tokenEmbededUser
-      })      
+      sendTokenResponse(user, 200, res);
 });
 
+// @desc    Logged in User
+// @route   GET /api/v1/auth/me
+// @access  Protected
+exports.me = asyncHandler(async (req, res, next) => {
+
+      const user = await User.findById(req.user.id);
+      res.status(200).json({
+            success: true,
+            user: user
+      })
+
+});
+
+// Create token custom function
+const sendTokenResponse = (user, statusCode, res) => {
+
+      const token = user.getJwtToken();
+
+      const options = {
+            expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 *60 * 1000),
+            httpOnly: true // Only accessible by Client side code
+      };
+
+      // embed token
+      var tokenEmbededUser = user.toObject();
+      tokenEmbededUser.token = token;
+
+      res.status(statusCode).cookie('token', token, options)
+      .json({
+            success: true,
+            // userData: tokenEmbededUser
+            token: token
+      })
+
+}

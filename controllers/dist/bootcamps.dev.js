@@ -301,22 +301,41 @@ exports.getBootcamps = asyncHandler(function _callee6(req, res, next) {
 // @access  Private
 
 exports.createBootcamps = asyncHandler(function _callee7(req, res, next) {
-  var bootcamp;
+  var hasBootcamp, bootcamp;
   return regeneratorRuntime.async(function _callee7$(_context7) {
     while (1) {
       switch (_context7.prev = _context7.next) {
         case 0:
-          _context7.next = 2;
+          // Add user to request Body
+          req.body.user = req.user.id; // check for published bootcamp
+
+          _context7.next = 3;
+          return regeneratorRuntime.awrap(Bootcamp.findOne({
+            user: req.user.id
+          }));
+
+        case 3:
+          hasBootcamp = _context7.sent;
+
+          if (!(hasBootcamp && req.user.role != 'admin')) {
+            _context7.next = 6;
+            break;
+          }
+
+          return _context7.abrupt("return", next(new ErrorResponse('You already have one bootcamp', 403)));
+
+        case 6:
+          _context7.next = 8;
           return regeneratorRuntime.awrap(Bootcamp.create(req.body));
 
-        case 2:
+        case 8:
           bootcamp = _context7.sent;
           res.status(201).json({
             success: true,
             data: bootcamp
           });
 
-        case 4:
+        case 10:
         case "end":
           return _context7.stop();
       }

@@ -13,8 +13,12 @@ const {
        bootcampPhotoUpload
 } = require('../controllers/bootcamps')
 
+// Bring the Protect auth
+const { protectRoute, authRoles } = require('../middleware/auth');
+
 // include other resource router :: Relation
 const courseRouter = require('./courses');
+
 
 const router = express.Router();
 
@@ -24,7 +28,7 @@ router.use('/:bootcampId/courses', courseRouter);
 
 router.route('/')
 .get(getBootcamp)
-.post(createBootcamps);
+.post(protectRoute, authRoles('publisher','admin'), createBootcamps); // PROVIDE those roles only who are only allowed to perform this action
 
 router.route('/radius/:zipcode/:distance').get(getBootcampsInRadious);
 router.route('/filter').get(getBootcampAdvancedFilter);
@@ -32,11 +36,12 @@ router.route('/SelectSort').get(getBootcampSelectSort);
 router.route('/page').get(getBootcampPagination);
 router.route('/virtualCourse').get(getBootcampWithCourse); // Virtuals : check model and controller
 
-router.route('/:id/photo').put(bootcampPhotoUpload);
+// JWT protected
+router.route('/:id/photo').put(protectRoute, bootcampPhotoUpload);
 
 router.route('/:id')
 .get(getBootcamps)
-.put(updateBootcamps)
-.delete(deleteBootcamps);
+.put(protectRoute, updateBootcamps)
+.delete(protectRoute, authRoles('publisher','admin'), deleteBootcamps); // PROVIDE those roles only who are only allowed to perform this action
 
 module.exports = router;
