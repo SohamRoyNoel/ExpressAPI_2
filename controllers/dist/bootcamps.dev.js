@@ -352,12 +352,7 @@ exports.updateBootcamps = asyncHandler(function _callee8(req, res, next) {
       switch (_context8.prev = _context8.next) {
         case 0:
           _context8.next = 2;
-          return regeneratorRuntime.awrap(Bootcamp.findByIdAndUpdate(req.params.id, req.body, {
-            "new": true,
-            // To return updated data
-            runValidators: true // Run validator explicitly 
-
-          }));
+          return regeneratorRuntime.awrap(Bootcamp.findById(req.params.id));
 
         case 2:
           bootcamp = _context8.sent;
@@ -370,12 +365,30 @@ exports.updateBootcamps = asyncHandler(function _callee8(req, res, next) {
           return _context8.abrupt("return", next(error));
 
         case 5:
+          if (!(bootcamp.user.toString() !== req.user.id && req.user.role !== 'admin')) {
+            _context8.next = 7;
+            break;
+          }
+
+          return _context8.abrupt("return", next(new ErrorResponse('You are not authorized to update this bootcamp', 403)));
+
+        case 7:
+          _context8.next = 9;
+          return regeneratorRuntime.awrap(Bootcamp.findOneAndUpdate(req.params.id, req.body, {
+            "new": true,
+            // To return updated data
+            runValidators: true // Run validator explicitly 
+
+          }));
+
+        case 9:
+          bootcamp = _context8.sent;
           res.status(200).json({
             success: true,
             data: bootcamp
           });
 
-        case 6:
+        case 11:
         case "end":
           return _context8.stop();
       }
@@ -405,6 +418,14 @@ exports.deleteBootcamps = asyncHandler(function _callee9(req, res, next) {
           return _context9.abrupt("return", next(error));
 
         case 5:
+          if (!(bootcamp.user.toString() !== req.user.id && req.user.role !== 'admin')) {
+            _context9.next = 7;
+            break;
+          }
+
+          return _context9.abrupt("return", next(new ErrorResponse('You are not authorized to update this bootcamp', 403)));
+
+        case 7:
           // Delete bootcamp along with course
           bootcamp.remove();
           res.status(200).json({
@@ -412,7 +433,7 @@ exports.deleteBootcamps = asyncHandler(function _callee9(req, res, next) {
             data: bootcamp
           });
 
-        case 7:
+        case 9:
         case "end":
           return _context9.stop();
       }

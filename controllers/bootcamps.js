@@ -223,19 +223,24 @@ exports.createBootcamps = asyncHandler(async (req, res, next) => {
 // @route   PUT /api/v1/bootcamps/:id
 // @access  Private
 exports.updateBootcamps = asyncHandler(async (req, res, next) => {
+      
       // res.status(200).json({  success:true, data: { msg: `Update bootcamps ${req.params.id}` }  })
-      const bootcamp = await Bootcamp
-            .findByIdAndUpdate(
-                  req.params.id,
-                        req.body,
-                  {
-                        new: true, // To return updated data
-                        runValidators: true  // Run validator explicitly 
-                  }
-            );
+      let bootcamp = await Bootcamp.findById(req.params.id);
+
       if(!bootcamp){  
             return next(error);
-      }
+      }     
+      // Check if the user is the bootcamp owner: then update
+      if(bootcamp.user.toString() !== req.user.id && req.user.role !== 'admin'){
+            return next(new ErrorResponse('You are not authorized to update this bootcamp', 403));
+      }  
+
+      bootcamp = await Bootcamp.findOneAndUpdate(req.params.id, req.body, {
+                  new: true, // To return updated data
+                  runValidators: true  // Run validator explicitly 
+            }
+      );          
+      
       res.status(200).json({
             success: true,
             data: bootcamp
@@ -256,6 +261,11 @@ exports.deleteBootcamps = asyncHandler(async (req, res, next) => {
             return next(error);
       }
 
+      // Check if the user is the bootcamp owner: then update
+      if(bootcamp.user.toString() !== req.user.id && req.user.role !== 'admin'){
+            return next(new ErrorResponse('You are not authorized to update this bootcamp', 403));
+      }  
+      
       // Delete bootcamp along with course
       bootcamp.remove();
 
