@@ -2,7 +2,9 @@ const express = require('express');
 const { 
       register,
       loginUser,
-      me
+      me,
+      forgetPassword,
+      resetPassword
 } = require('../controllers/auth');
 
 // Bring protect middleware
@@ -18,6 +20,12 @@ router.route('/login')
 
 router.route('/me')
 .get(protectRoute, me);
+
+router.route('/forgetPassword')
+.get(forgetPassword);
+
+router.route('/resetpassword/:token')
+.put(resetPassword);
 
 
 module.exports = router;
